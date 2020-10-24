@@ -24,37 +24,33 @@ loop:
    move $a0, $t1       # Load our counter ready for output
    li $v0, 1           # Set service to print integer
    syscall             # Request kernel service
-   j newline           # Jump to newline subroutine to print newline & increment
+   j newline           # Jump to newline subroutine to print newline
 end:
    li $v0, 10          # Set service to terminate execution
    syscall             # Request kernel service
 fizz:                  # Fizz subroutine checks if its also a buzz then jumps to fizzbuzz 
-   div $t1, $t5        # Or just prints fizz, then increments the counter & loops
+   div $t1, $t5        # Or just prints fizz
    mfhi $t7
    beq $t7, $zero, fizzbuzz
    la $a0, fizz_string
    li $v0, 4
-   addi $t1, $t1, 1
-   syscall
-   j loop
+   j iter
 buzz:                  # Buzz subroutine checks if its also a fizz then jumps to fizzbuzz
    div $t1 , $t3       # Or just prints buzz, then increments the counter & loops
    mfhi $t6
    beq $t6, $zero, fizzbuzz
    la $a0, buzz_string
    li $v0, 4
-   addi $t1, $t1, 1
-   syscall
-   j loop
-fizzbuzz:              # Fizzbuzz subroutine prints fizzbuzz & increments the counter
+   j iter
+fizzbuzz:              # Fizzbuzz subroutine prints fizzbuzz
    la $a0, fizzbuzz_string
    li $v0, 4
-   addi $t1, $t1, 1
-   syscall
-   j loop
-newline:               # Newline subroutine prints \n & increments the counter
+   j iter
+newline:               # Newline subroutine prints \n
    la $a0, newline_string
    li $v0, 4
+   j iter
+iter:                  # Iter subroutine increments our counter and then returns to the top of the loops
    addi $t1, $t1, 1
    syscall
    j loop
